@@ -123,4 +123,44 @@ class TestAccountService(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
-    # ADD YOUR TEST CASES HERE ...
+    def test_get_account(self):
+        account = self._create_accounts(1)[0]
+        response = self.client.get(f"{BASE_URL}/{account.id}", content_type="application/json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = response.get_json()
+        self.assertEqual(data["name"], account.name)
+
+    def test_update_account(self):
+        """It should Update an account's information"""
+        # Create an account to update
+        account = self._create_accounts(1)[0]
+        new_data = {
+            "name": "chris",
+            "email": "christophernge99@gmail.com",
+            "address": "Bishan",
+            "phone_number": "97890585",
+            "date_joined": str(account.date_joined)
+        }
+        response = self.client.put(f"{BASE_URL}/{account.id}", json=new_data, content_type="application/json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        updated_account = response.get_json()
+        self.assertEqual(updated_account['name'], new_data['name'])
+        self.assertEqual(updated_account['email'], new_data['email'])
+
+    def test_delete_account(self):
+        """It should Delete an account's information"""
+        account = self._create_accounts(1)[0]
+        response = self.client.delete(f"{BASE_URL}/{account.id}", content_type="application/json")
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        response = self.client.get(f"{BASE_URL}/{account.id}", content_type="application/json")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_list_accounts(self):
+        self._create_accounts(5)
+        response = self.client.get(f"{BASE_URL}", content_type="application/json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(len(data), 5)
