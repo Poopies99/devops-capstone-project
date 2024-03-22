@@ -13,6 +13,7 @@ from service.common import status  # HTTP Status Codes
 from service.models import db, Account, init_db
 from service.routes import app
 from service import talisman
+from service import CORS
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/postgres"
@@ -102,6 +103,14 @@ class TestAccountService(TestCase):
         }
         for key, value in headers.items():
             self.assertEqual(response.headers[key], value)
+
+    def test_cors_security(self):
+        """It should return a CORS headers"""
+        response = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Check for CORS header
+        self.assertEqual(response.headers.get('Access-Control-Allow-Origin'), '*')
 
     def test_create_account(self):
         """It should Create a new Account"""
