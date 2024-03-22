@@ -1,6 +1,7 @@
 import os
 import logging
 from unittest import TestCase
+from service import talisman
 from service.common import status  # HTTP Status Codes
 from service.models import db, Account, init_db
 from service.routes import app
@@ -24,6 +25,7 @@ class TestErrorHandlers(TestCase):
         app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
         app.logger.setLevel(logging.CRITICAL)
         init_db(app)
+        talisman.force_https = False
 
     @classmethod
     def tearDownClass(cls):
