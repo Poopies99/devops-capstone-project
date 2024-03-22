@@ -4,11 +4,11 @@ Package for the application models and service routes
 This module creates and configures the Flask app and sets up the logging
 and SQL database
 """
+import app
 import sys
 from flask import Flask
 from service import config
 from service.common import log_handlers
-from service.routes import app
 from flask_talisman import Talisman
 
 # Talisman forces all requests to REST API to use HTTPS protocol
