@@ -1,5 +1,9 @@
 FROM python:3.9-slim
 
+# Install libpq (Make sure to update versions and dependencies as needed)
+RUN apt-get update && \
+    apt-get install -y libpq-dev
+
 # Sets the working directory for COPY, RUN, CMD, Entrypoint and ADD to /app
 WORKDIR /app
 
